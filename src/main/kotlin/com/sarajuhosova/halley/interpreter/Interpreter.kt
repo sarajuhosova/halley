@@ -15,7 +15,7 @@ import com.sarajuhosova.halley.model.value.HalleyValue
 object Interpreter {
 
     private fun interpret(
-        ctx: Context<HalleyValue>,
+        ctx: Context,
         expr: HalleyExpr
     ): HalleyValue {
         when (expr) {
@@ -39,7 +39,7 @@ object Interpreter {
     }
 
     private fun interpret(
-        ctx: Context<HalleyValue>,
+        ctx: Context,
         stmt: HalleyStmt
     ) {
         when (stmt) {
@@ -56,7 +56,7 @@ object Interpreter {
     }
 
     fun interpret(program: HalleyProgram): HalleyValue {
-        val ctx = Context<HalleyValue>()
+        val ctx = Context()
 
         for (s in program.stmts) {
             interpret(ctx, s)

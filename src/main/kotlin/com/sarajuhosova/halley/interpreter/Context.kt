@@ -2,13 +2,14 @@ package com.sarajuhosova.halley.interpreter
 
 import com.sarajuhosova.halley.exception.interpreter.CannotMutateImmutable
 import com.sarajuhosova.halley.exception.interpreter.VariableNotBound
+import com.sarajuhosova.halley.model.value.HalleyValue
 
-class Context<V> {
+class Context {
 
-    private val bindings: MutableMap<String, MutableList<Pair<V, Boolean>>>
+    private val bindings: MutableMap<String, MutableList<Pair<HalleyValue, Boolean>>>
         = mutableMapOf()
 
-    fun bind(name: String, value: V, mutable: Boolean = false) {
+    fun bind(name: String, value: HalleyValue, mutable: Boolean = false) {
         val entry = Pair(value, mutable)
         if (!bindings.containsKey(name)) {
             bindings[name] = mutableListOf(entry)
@@ -25,7 +26,7 @@ class Context<V> {
         return bindings[name]!!.last().second
     }
 
-    fun mutate(name: String, value: V) {
+    fun mutate(name: String, value: HalleyValue) {
         if (!bindings.containsKey(name)) {
             throw VariableNotBound("$name cannot be mutated")
         }
@@ -51,7 +52,7 @@ class Context<V> {
         }
     }
 
-    fun get(name: String): V {
+    fun get(name: String): HalleyValue {
         if (!bindings.containsKey(name)) {
             throw VariableNotBound(name)
         }
