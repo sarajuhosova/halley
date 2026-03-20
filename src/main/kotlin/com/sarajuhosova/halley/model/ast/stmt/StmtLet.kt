@@ -5,16 +5,12 @@ import com.sarajuhosova.halley.model.ast.expr.HalleyExpr
 data class StmtLet(
     val name: String,
     val expr: HalleyExpr,
-    val mut: Boolean = false
+    val mutable: Boolean = false
 ): HalleyStmt() {
 
-    fun getBinder(): String = if (mut) "var" else "val"
-
-    override fun generate() {
-        TODO("Not yet implemented")
-    }
+    fun getBinder(): String = if (mutable) "var" else "val"
 
     override fun prettyPrintStmt(): String =
-        String.format("%s %s = %s", getBinder(), name, expr.prettyPrint())
+        "${getBinder()} $name = ${expr.prettyPrint()}"
 
 }

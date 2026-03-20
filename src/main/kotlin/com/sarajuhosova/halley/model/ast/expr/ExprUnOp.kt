@@ -1,13 +1,13 @@
 package com.sarajuhosova.halley.model.ast.expr
 
+import com.sarajuhosova.halley.model.enums.UnOp
+
 data class ExprUnOp(
-    val operator: String,
+    val operator: UnOp,
     val expr: HalleyExpr
 ): HalleyExpr() {
-    override fun generate() {
-        TODO("Not yet implemented")
-    }
 
     override fun prettyPrint(): String =
-        operator + expr.prettyPrint()
+        operator.prettyPrint() + expr.prettyPrint()
+
 }

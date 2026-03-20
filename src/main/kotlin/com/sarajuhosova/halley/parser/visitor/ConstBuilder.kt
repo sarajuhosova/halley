@@ -2,12 +2,12 @@ package com.sarajuhosova.halley.parser.visitor
 
 import com.sarajuhosova.halley.HalleyBaseVisitor
 import com.sarajuhosova.halley.HalleyParser
-import com.sarajuhosova.halley.model.ast.hconst.HalleyConst
 import com.sarajuhosova.halley.model.ast.hconst.ConstBool
 import com.sarajuhosova.halley.model.ast.hconst.ConstInt
 import com.sarajuhosova.halley.model.ast.hconst.ConstString
+import com.sarajuhosova.halley.model.ast.hconst.ExprConst
 
-object ConstBuilder: HalleyBaseVisitor<HalleyConst>() {
+object ConstBuilder: HalleyBaseVisitor<ExprConst>() {
 
     override fun visitBool(ctx: HalleyParser.BoolContext): ConstBool =
         ConstBool(ctx.text.toBoolean())

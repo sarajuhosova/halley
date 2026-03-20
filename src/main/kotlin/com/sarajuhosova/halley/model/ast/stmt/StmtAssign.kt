@@ -7,11 +7,7 @@ data class StmtAssign(
     val expr: HalleyExpr
 ): HalleyStmt() {
 
-    override fun generate() {
-        TODO("Not yet implemented")
-    }
-
     override fun prettyPrintStmt(): String =
-        String.format("%s = %s", name, expr.prettyPrint())
+        "$name = ${expr.prettyPrint()}"
 
 }

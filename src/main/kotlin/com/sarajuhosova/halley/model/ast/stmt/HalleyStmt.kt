@@ -6,7 +6,6 @@ abstract class HalleyStmt: HalleyElement() {
 
     protected abstract fun prettyPrintStmt(): String
 
-    override fun prettyPrint(): String =
-        String.format("%s;", prettyPrintStmt())
+    override fun prettyPrint(): String = "${prettyPrintStmt()};"
 
 }

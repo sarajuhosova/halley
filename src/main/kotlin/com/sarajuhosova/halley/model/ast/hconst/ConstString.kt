@@ -1,11 +1,11 @@
 package com.sarajuhosova.halley.model.ast.hconst
 
+import com.sarajuhosova.halley.model.value.ValueString
+
 data class ConstString(
     val value: String
-): HalleyConst() {
-    override fun generate() {
-        TODO("Not yet implemented")
-    }
+): ExprConst(ValueString(value)) {
 
-    override fun prettyPrint(): String = String.format("\"%s\"", value)
+    override fun prettyPrint(): String = "\"$value\""
+
 }
