@@ -1,0 +1,10 @@
+[versions]
+
+antlr = "4.13.2" #
+assertj = "3.27.3" #
+
+[libraries]
+
+antlr4 = { module = "org.antlr:antlr4", version.ref = "antlr" }
+
+assertj = { module = "org.assertj:assertj-core", version.ref = "assertj" }
