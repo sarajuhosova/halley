@@ -1,6 +1,6 @@
 package com.sarajuhosova.halley.model.ast.expr
 
-class ExprBinOp(
+data class ExprBinOp(
     val operator: String,
     val left: HalleyExpr,
     val right: HalleyExpr,

@@ -3,7 +3,7 @@ package com.sarajuhosova.halley.model.ast
 import com.sarajuhosova.halley.model.ast.expr.HalleyExpr
 import com.sarajuhosova.halley.model.ast.stmt.HalleyStmt
 
-class HalleyProgram(
+data class HalleyProgram(
     val stmts: List<HalleyStmt> = emptyList(),
     val expr: HalleyExpr? = null
 ): HalleyElement() {
@@ -15,4 +15,5 @@ class HalleyProgram(
         val body: String = stmts.joinToString("\n") { it.prettyPrint() }
         return if (expr != null) body + expr.prettyPrint() else body
     }
+
 }

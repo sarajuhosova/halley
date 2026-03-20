@@ -1,6 +1,6 @@
 package com.sarajuhosova.halley.model.ast.expr
 
-class ExprVar(
+data class ExprVar(
     val name: String
 ): HalleyExpr() {
     override fun generate() {

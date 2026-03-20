@@ -1,6 +1,6 @@
 package com.sarajuhosova.halley.model.ast.hconst
 
-class ConstBool(
+data class ConstBool(
     val value: Boolean
 ): HalleyConst() {
     override fun generate() {

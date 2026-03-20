@@ -1,6 +1,6 @@
 package com.sarajuhosova.halley.model.ast.hconst
 
-class ConstString(
+data class ConstString(
     val value: String
 ): HalleyConst() {
     override fun generate() {

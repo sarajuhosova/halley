@@ -2,7 +2,7 @@ package com.sarajuhosova.halley.model.ast.stmt
 
 import com.sarajuhosova.halley.model.ast.expr.HalleyExpr
 
-class StmtLet(
+data class StmtLet(
     val name: String,
     val expr: HalleyExpr,
     val mut: Boolean = false

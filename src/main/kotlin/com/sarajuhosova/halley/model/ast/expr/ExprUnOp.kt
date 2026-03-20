@@ -1,6 +1,6 @@
 package com.sarajuhosova.halley.model.ast.expr
 
-class ExprUnOp(
+data class ExprUnOp(
     val operator: String,
     val expr: HalleyExpr
 ): HalleyExpr() {

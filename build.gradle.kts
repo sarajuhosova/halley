@@ -1,9 +1,11 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "2.2.20"
+    kotlin("jvm") version libs.versions.jvm
     antlr
     idea
+    kotlin("plugin.lombok") version libs.versions.lombok
+    id("io.freefair.lombok") version libs.versions.lombokFreefair
 }
 
 group = "com.sarajuhosova.halley"
@@ -23,6 +25,7 @@ dependencies {
 tasks.test {
     useJUnitPlatform()
 }
+
 kotlin {
     jvmToolchain(21)
 }
@@ -31,6 +34,10 @@ idea {
     module {
         sourceDirs.add(file("$projectDir/src/main/antlr"))
     }
+}
+
+kotlinLombok {
+    lombokConfigurationFile(file("lombok.config"))
 }
 
 tasks.generateGrammarSource {
