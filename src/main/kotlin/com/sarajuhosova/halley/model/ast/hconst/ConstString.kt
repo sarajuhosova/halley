@@ -1,8 +1,8 @@
 package com.sarajuhosova.halley.model.ast.hconst
 
-class PrimitiveString(
+class ConstString(
     val value: String
-): HalleyPrimitive() {
+): HalleyConst() {
     override fun generate() {
         TODO("Not yet implemented")
     }

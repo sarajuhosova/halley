@@ -6,12 +6,12 @@ import com.sarajuhosova.halley.model.ast.expr.ExprBinOp
 import com.sarajuhosova.halley.model.ast.expr.ExprUnOp
 import com.sarajuhosova.halley.model.ast.expr.ExprVar
 import com.sarajuhosova.halley.model.ast.expr.HalleyExpr
-import com.sarajuhosova.halley.model.ast.hconst.HalleyPrimitive
+import com.sarajuhosova.halley.model.ast.hconst.HalleyConst
 
 object ExprBuilder: HalleyBaseVisitor<HalleyExpr>() {
 
-    override fun visitPrim(ctx: HalleyParser.PrimContext): HalleyPrimitive {
-        return PrimitiveBuilder.visit(ctx)
+    override fun visitConst(ctx: HalleyParser.ConstContext): HalleyConst {
+        return ConstBuilder.visit(ctx)
     }
 
     override fun visitVar(ctx: HalleyParser.VarContext): ExprVar =

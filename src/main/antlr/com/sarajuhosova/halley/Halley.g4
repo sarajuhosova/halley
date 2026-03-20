@@ -8,13 +8,13 @@ stmt
     ;
 
 expr
-    : primitive                             #prim
+    : constant                              #const
     | Name                                  #var
     | op=UnOp e=expr                        #unop
     | left=expr op=BinOp right=expr         #binop
     ;
 
-primitive
+constant
     : Bool                                  #bool
     | Int                                   #int
     | String                                #string

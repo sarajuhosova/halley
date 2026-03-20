@@ -1,12 +1,12 @@
 package com.sarajuhosova.halley.model.ast.hconst
 
-class PrimitiveInt(
-    val value: Int
-): HalleyPrimitive() {
+class ConstBool(
+    val value: Boolean
+): HalleyConst() {
     override fun generate() {
         TODO("Not yet implemented")
     }
 
     override fun prettyPrint(): String =
-        value.toString()
+        if (value) "true" else "false"
 }

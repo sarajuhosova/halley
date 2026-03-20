@@ -1,6 +1,6 @@
 package com.sarajuhosova.halley.parser
 
-import com.sarajuhosova.halley.model.ast.hconst.PrimitiveBool
+import com.sarajuhosova.halley.model.ast.hconst.ConstBool
 import kotlin.test.Test
 import org.assertj.core.api.Assertions.assertThat
 
@@ -13,8 +13,8 @@ class Examples {
         """.trimIndent()
         val ast = Parser.parse(program)
         assertThat(ast.stmts).isEmpty()
-        assertThat(ast.expr is PrimitiveBool).isTrue()
-        val b = ast.expr as PrimitiveBool
+        assertThat(ast.expr is ConstBool).isTrue()
+        val b = ast.expr as ConstBool
         assertThat(b.value).isTrue()
     }
 
