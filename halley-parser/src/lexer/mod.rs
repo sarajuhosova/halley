@@ -1,3 +1,4 @@
+use std::collections::VecDeque;
 use std::path::{Path, PathBuf};
 use anyhow::{anyhow, Result};
 use crate::{Position, Range};
@@ -7,13 +8,13 @@ use crate::lexer::token_type::TokenType;
 pub mod token;
 pub mod token_type;
 
-pub fn tokenise<P: AsRef<Path>>(input: &str, path: P) -> Result<Vec<Token>> {
-    let mut result: Vec<Token> = Vec::new();
+pub fn tokenise<P: AsRef<Path>>(input: &str, path: P) -> Result<VecDeque<Token>> {
+    let mut result: VecDeque<Token> = VecDeque::new();
 
     let mut position = 0;
     skip_whitespace(input, &mut position);
     while let Some(token) = find_next_token(input, &mut position, path.as_ref())? {
-        result.push(token);
+        result.push_back(token);
         skip_whitespace(input, &mut position);
     }
 

@@ -8,10 +8,24 @@ pub enum TokenType {
     Number,
 
     Let,
+    Fn,
+
+    Int,
+    Bool,
 
     Equals,
-    Semicolon,
     Plus,
+    Reference,
+    Arrow,
+
+    Comma,
+    Semicolon,
+    Colon,
+
+    BraceOpen,
+    BraceClose,
+    ParenOpen,
+    ParenClose,
 
     TokenTypesEnd,
 }
@@ -30,11 +44,28 @@ impl TokenType {
         match self {
             TokenType::Identifier => r"\b[A-Za-z_][A-Za-z0-9_]*\b",
             TokenType::Number => r"\d+",
+
             TokenType::Let => r"\blet\b",
+            TokenType::Fn => r"\bfn\b",
+
+            TokenType::Int => r"\bInt\b",
+            TokenType::Bool => r"\bBool\b",
+
             TokenType::Equals => r"\=",
-            TokenType::Semicolon => r";",
             TokenType::Plus => r"\+",
-            _ => unreachable!()
+            TokenType::Reference => r"&",
+            TokenType::Arrow => r"->",
+
+            TokenType::Comma => r",",
+            TokenType::Semicolon => r";",
+            TokenType::Colon => r":",
+
+            TokenType::BraceOpen => r"\{",
+            TokenType::BraceClose => r"\}",
+            TokenType::ParenOpen => r"\(",
+            TokenType::ParenClose => r"\)",
+
+            _ => panic!("{:?} has no pattern defined", self),
         }
     }
 

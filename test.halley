@@ -1,3 +1,4 @@
-let x = 0;
-let y = x;
-x + y
+fn f(x: Int, y: Bool) -> Bool {
+    let z: Int = x;
+    x
+}

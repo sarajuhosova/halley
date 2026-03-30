@@ -1,6 +1,7 @@
 use std::path::PathBuf;
 
 pub mod lexer;
+pub mod parser;
 
 #[derive(Clone, Debug)]
 pub struct Range {
