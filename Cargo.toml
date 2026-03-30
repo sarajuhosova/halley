@@ -8,3 +8,5 @@ resolver = "3"
 members = ["halley-lang", "halley-lsp-client", "halley-lsp-server", "halley-parser", "halley-pbt-generator"]
 
 [dependencies]
+halley-lang = { path = "./halley-lang" }
+halley-parser = { path = "./halley-parser" }
