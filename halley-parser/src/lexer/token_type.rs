@@ -9,14 +9,17 @@ pub enum TokenType {
 
     Let,
     Fn,
+    Data,
 
     Int,
     Bool,
+    True, False,
 
     Equals,
     Plus,
     Reference,
     Arrow,
+    Not,
     DoubleEquals,
     NotEquals,
     LessThan,
@@ -33,6 +36,7 @@ pub enum TokenType {
     Comma,
     Semicolon,
     Colon,
+    Scope,
 
     BraceOpen,
     BraceClose,
@@ -59,9 +63,12 @@ impl TokenType {
 
             TokenType::Let => r"\blet\b",
             TokenType::Fn => r"\bfn\b",
+            TokenType::Data => r"\bdata\b",
 
             TokenType::Int => r"\bInt\b",
             TokenType::Bool => r"\bBool\b",
+            TokenType::True => r"\btrue\b",
+            TokenType::False => r"\bfalse\b",
 
             TokenType::Equals => r"\=",
             TokenType::Plus => r"\+",
@@ -75,6 +82,7 @@ impl TokenType {
             TokenType::GreaterThanEquals => r">\=",
             TokenType::And => r"&&",
             TokenType::Or => r"||",
+            TokenType::Not => r"!",
             TokenType::Minus => r"-",
             TokenType::Asterisk => r"\*",
             TokenType::Divide => r"/",
@@ -83,6 +91,7 @@ impl TokenType {
             TokenType::Comma => r",",
             TokenType::Semicolon => r";",
             TokenType::Colon => r":",
+            TokenType::Scope => r"::",
 
             TokenType::BraceOpen => r"\{",
             TokenType::BraceClose => r"\}",

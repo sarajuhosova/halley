@@ -1,4 +1,4 @@
-use halley_lang::ast::BinaryOperator;
+use halley_lang::ast::{BinaryOperator, UnaryOperator};
 use crate::lexer::token_type::TokenType;
 use crate::lexer::token_type::TokenType::TokenTypesEnd;
 
@@ -14,7 +14,17 @@ pub fn precedence(operator: BinaryOperator) -> u32 {
     }
 }
 
-pub fn operator_type(operator: BinaryOperator) -> TokenType {
+pub fn unary_operator_type(operator: UnaryOperator) -> TokenType {
+    match operator {
+        UnaryOperator::Neg => TokenType::Minus,
+        UnaryOperator::Not => TokenType::Not,
+        UnaryOperator::Reference => TokenType::Reference,
+        UnaryOperator::Dereference => TokenType::Asterisk,
+        UnaryOperator::UnaryOperatorsEnd => panic!("Invalid operator"),
+    }
+}
+
+pub fn binary_operator_type(operator: BinaryOperator) -> TokenType {
     match operator {
         BinaryOperator::Eq => TokenType::DoubleEquals,
         BinaryOperator::Neq => TokenType::NotEquals,
