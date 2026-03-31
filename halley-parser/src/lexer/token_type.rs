@@ -17,6 +17,18 @@ pub enum TokenType {
     Plus,
     Reference,
     Arrow,
+    DoubleEquals,
+    NotEquals,
+    LessThan,
+    GreaterThan,
+    LessThanEquals,
+    GreaterThanEquals,
+    And,
+    Or,
+    Minus,
+    Asterisk,
+    Divide,
+    Modulo,
 
     Comma,
     Semicolon,
@@ -55,6 +67,18 @@ impl TokenType {
             TokenType::Plus => r"\+",
             TokenType::Reference => r"&",
             TokenType::Arrow => r"->",
+            TokenType::DoubleEquals => r"\=\=",
+            TokenType::NotEquals => r"!\=",
+            TokenType::LessThan => r"<",
+            TokenType::GreaterThan => r">",
+            TokenType::LessThanEquals => r"<\=",
+            TokenType::GreaterThanEquals => r">\=",
+            TokenType::And => r"&&",
+            TokenType::Or => r"||",
+            TokenType::Minus => r"-",
+            TokenType::Asterisk => r"\*",
+            TokenType::Divide => r"/",
+            TokenType::Modulo => r"%",
 
             TokenType::Comma => r",",
             TokenType::Semicolon => r";",
@@ -65,7 +89,7 @@ impl TokenType {
             TokenType::ParenOpen => r"\(",
             TokenType::ParenClose => r"\)",
 
-            _ => panic!("{:?} has no pattern defined", self),
+            TokenType::TokenTypesEnd => panic!("Invalid token type"),
         }
     }
 

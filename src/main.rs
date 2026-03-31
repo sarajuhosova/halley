@@ -8,5 +8,5 @@ fn main() {
     let content = fs::read_to_string(test_file).unwrap();
     let mut tokens = tokenise(&content, test_file).unwrap();
     let program = parse_program(&mut tokens).unwrap();
-    println!("{:?}", program);
+    println!("{}", program);
 }

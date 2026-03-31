@@ -1,9 +1,13 @@
-use std::collections::VecDeque;
+mod operators;
+
+use std::collections::{HashSet, VecDeque};
 use halley_lang::ast::{Argument, BinaryOperator, Block, Expression, Program, Statement, Type, UnaryOperator};
 use anyhow::{anyhow, bail, Result};
+use itertools::Itertools;
 use halley_lang::ast::id::Id;
 use crate::lexer::token::Token;
 use crate::lexer::token_type::TokenType;
+use crate::parser::operators::{operator_type, precedence};
 
 pub fn parse_program(tokens: &mut VecDeque<Token>) -> Result<Program> {
     let mut statements: Vec<Statement> = Vec::new();
@@ -78,11 +82,21 @@ pub fn parse_expression(tokens: &mut VecDeque<Token>) -> Result<Expression> {
 }
 
 pub fn parse_binop_expression(tokens: &mut VecDeque<Token>) -> Result<Expression> {
-    bail!("TODO")
-    // let left = Box::new(parse_expression(tokens)?);
-    // let operator = parse_binary_operator(tokens)?;
-    // let right = Box::new(parse_expression(tokens)?);
-    // Ok(Expression::BinOp { operator, left, right })
+    for level in BinaryOperator::iter().map(|op| precedence(op)).unique().sorted() {
+        let operator_set = BinaryOperator::iter().filter(|op| precedence(*op) == level).map(|op| operator_type(op)).collect::<HashSet<_>>();
+        let nearest_operator = tokens.iter().enumerate().find(|(_, t)| operator_set.contains(&t.token_type)).map(|(i, t)| (i, t.token_type));
+        if let Some((pos_of_nearest_operator, t)) = nearest_operator {
+            if let Some(result) = parse_speculative(tokens, |tokens| {
+                let left = Box::new(parse_exhaustive(&mut tokens.drain(0..pos_of_nearest_operator).collect::<VecDeque<_>>(), parse_expression)?);
+                let operator = parse_binary_operator(tokens)?;
+                let right = Box::new(parse_expression(tokens)?);
+                Ok(Expression::BinOp { operator, left, right })
+            }) {
+                return Ok(result)
+            }
+        }
+    }
+    bail!("No binary operator found");
 }
 
 pub fn parse_unop_expression(tokens: &mut VecDeque<Token>) -> Result<Expression> {
@@ -128,17 +142,25 @@ pub fn parse_id(tokens: &mut VecDeque<Token>) -> Result<Id> {
 }
 
 pub fn parse_binary_operator(tokens: &mut VecDeque<Token>) -> Result<BinaryOperator> {
-    match peek_single_token(tokens) {
-        Some(TokenType::Plus) => {
-            parse_single_token(tokens, TokenType::Plus)?;
-            Ok(BinaryOperator::Add)
-        },
-        t => bail!("Unknown start of unary operator: {:?}", t),
+    if let Some(token_type) = peek_single_token(tokens) {
+        if let Some(operator) = BinaryOperator::iter().find(|op| operator_type(*op) == token_type) {
+            parse_single_token(tokens, token_type)?;
+            return Ok(operator);
+        }
     }
+    bail!("Invalid binary operator: {:?}", peek_single_token(tokens));
 }
 
 pub fn parse_unary_operator(tokens: &mut VecDeque<Token>) -> Result<UnaryOperator> {
     bail!("Unknown start of unary operator: {:?}", peek_single_token(tokens));
+}
+
+fn parse_exhaustive<T, F>(tokens: &mut VecDeque<Token>, parse: F) -> Result<T> where F: FnOnce(&mut VecDeque<Token>) -> Result<T> {
+    let result = parse(tokens)?;
+    if !tokens.is_empty() {
+        bail!("Leftover tokens: {:?}", tokens);
+    }
+    Ok(result)
 }
 
 fn parse_speculative<T, F>(tokens: &mut VecDeque<Token>, parse: F) -> Option<T> where F: FnOnce(&mut VecDeque<Token>) -> Result<T> {

@@ -1,5 +1,9 @@
 pub mod id;
 
+use std::fmt::{Display, Formatter};
+use std::mem;
+use std::os::linux::raw::stat;
+use std::os::unix::fs::lchown;
 use uuid::Uuid;
 use crate::ast::id::Id;
 
@@ -45,10 +49,113 @@ pub enum UnaryOperator {
     Neg, Not,
 }
 
+#[repr(u8)]
 #[derive(Clone, Copy, Debug, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum BinaryOperator {
     Eq, Neq,
     Lt, Gt, Le, Ge,
     And, Or,
     Add, Sub, Mul, Div, Mod,
+    BinaryOperatorsEnd
+}
+
+impl Expression {
+    pub fn parenthesised(&self) -> String {
+        match self {
+            Expression::Variable { .. } => format!("{}", self),
+            _ => format!("({})", self),
+        }
+    }
+}
+
+impl BinaryOperator {
+    pub fn iter() -> impl Iterator<Item = BinaryOperator> {
+        (0..BinaryOperator::BinaryOperatorsEnd as u8).map(|i| unsafe { mem::transmute(i) })
+    }
+}
+
+impl Display for Program {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.statements.iter().map(|statement| statement.to_string()).collect::<Vec<_>>().join("\n\n"))
+    }
+}
+
+impl Display for Statement {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Statement::Function { id, arguments, return_type, body } => {
+                let arguments = arguments.iter().map(|arg| format!("{}", arg)).collect::<Vec<_>>().join(", ");
+                write!(f, "fn {}({}) -> {} {}", id, arguments, return_type, body)
+            },
+            Statement::Assign { id, value } => write!(f, "{} = {}", id, value),
+            Statement::Let { id, ty, value } => write!(f, "let {}: {} = {}", id, ty, value),
+        }
+    }
+}
+
+impl Display for Block {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{{\n")?;
+        for statement in &self.statements {
+            write!(f, "{};\n", statement.to_string().lines().map(|line| String::from("    ") + line).collect::<Vec<_>>().join("\n"))?;
+        }
+        write!(f, "{}\n", self.expression.to_string().lines().map(|line| String::from("    ") + line).collect::<Vec<_>>().join("\n"))?;
+        write!(f, "}}")
+    }
+}
+
+impl Display for Expression {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Expression::Variable { id } => write!(f, "{}", id),
+            Expression::UnOp { operator, operand } => write!(f, "{}{}", operator, operand.parenthesised()),
+            Expression::BinOp { operator, left, right } => write!(f, "{} {} {}", left.parenthesised(), operator, right.parenthesised()),
+        }
+    }
+}
+
+impl Display for Argument {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}: {}", self.id, self.ty)
+    }
+}
+
+impl Display for Type {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Type::Bool => write!(f, "Bool"),
+            Type::Int => write!(f, "Int"),
+            Type::Pointer { ty } => write!(f, "&{}", *ty),
+        }
+    }
+}
+
+impl Display for UnaryOperator {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match self {
+            UnaryOperator::Neg => write!(f, "-"),
+            UnaryOperator::Not => write!(f, "!"),
+        }
+    }
+}
+
+impl Display for BinaryOperator {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match self {
+            BinaryOperator::Eq => write!(f, "=="),
+            BinaryOperator::Neq => write!(f, "!="),
+            BinaryOperator::Lt => write!(f, "<"),
+            BinaryOperator::Gt => write!(f, ">"),
+            BinaryOperator::Le => write!(f, "<="),
+            BinaryOperator::Ge => write!(f, ">="),
+            BinaryOperator::And => write!(f, "&&"),
+            BinaryOperator::Or => write!(f, "||"),
+            BinaryOperator::Add => write!(f, "+"),
+            BinaryOperator::Sub => write!(f, "-"),
+            BinaryOperator::Mul => write!(f, "*"),
+            BinaryOperator::Div => write!(f, "/"),
+            BinaryOperator::Mod => write!(f, "%"),
+            BinaryOperator::BinaryOperatorsEnd => panic!("Invalid operator"),
+        }
+    }
 }

@@ -1,4 +1,4 @@
 fn f(x: Int, y: Bool) -> Bool {
     let z: Int = x;
-    x
+    a + b * y < x == a - y + x * o >= t
 }
