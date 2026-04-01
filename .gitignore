@@ -45,3 +45,5 @@ bin/
 # Added by cargo
 
 /target
+
+*.sock

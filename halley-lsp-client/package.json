@@ -1,0 +1,46 @@
+{
+	"name": "halley-lsp-client",
+	"description": "VSCode part of a language server",
+	"author": "Microsoft Corporation",
+	"license": "MIT",
+	"version": "0.0.1",
+	"publisher": "vscode",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/sarajuhosova/halley"
+	},
+	"engines": {
+		"vscode": "^1.100.0"
+	},
+	"keywords": [
+		"multi-root ready"
+	],
+	"categories": [],
+	"main": "./out/extension",
+	"contributes": {
+		"configuration": {
+
+		},
+		"languages": [{
+			"id": "halley",
+			"extensions": [ ".halley" ],
+			"aliases": [ "Halley" ],
+			"configuration": "./language-config.json"
+		}]
+	},
+	"scripts": {
+		"vscode:prepublish": "npm run compile",
+		"compile": "tsc -b",
+		"watch": "tsc -b -w"
+	},
+	"dependencies": {
+		"glob": "^11.0.0",
+		"vscode-languageclient": "^9.0.1"
+	},
+	"devDependencies": {
+		"typescript": "^5.9.2",
+		"@types/node": "^22",
+		"@types/vscode": "^1.100.0",
+		"@vscode/test-electron": "^2.3.9"
+	}
+}
