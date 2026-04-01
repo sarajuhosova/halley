@@ -1,7 +1,7 @@
 use std::fmt::{Display, Formatter};
 use uuid::Uuid;
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Hash, PartialEq, Eq)]
 pub struct Id {
     pub name: String,
     pub uuid: Uuid,

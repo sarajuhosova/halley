@@ -3,6 +3,10 @@ data Tree {
     Leaf {},
 }
 
+data Nat {
+    Zero { },
+}
+
 fn f(x: Int, y: Bool) -> Bool {
-    Tree::Node { left: Tree::Leaf {}, right: Tree::Leaf {} }
+    Nat::Zero {  }
 }

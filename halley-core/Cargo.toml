@@ -1,0 +1,9 @@
+[package]
+name = "halley-core"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+halley-lang = { path = "../halley-lang" }
+halley-parser = { path = "../halley-parser" }
+anyhow = "1"

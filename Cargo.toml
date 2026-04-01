@@ -5,8 +5,9 @@ edition = "2024"
 
 [workspace]
 resolver = "3"
-members = ["halley-lang", "halley-lsp-client", "halley-lsp-server", "halley-parser", "halley-pbt-generator"]
+members = ["halley-core", "halley-lang", "halley-lsp-client", "halley-lsp-server", "halley-parser", "halley-pbt-generator"]
 
 [dependencies]
 halley-lang = { path = "./halley-lang" }
 halley-parser = { path = "./halley-parser" }
+halley-core = { path = "./halley-core" }
