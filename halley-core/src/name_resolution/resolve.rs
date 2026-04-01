@@ -1,18 +1,19 @@
 use std::collections::HashMap;
 use halley_lang::ast::id::Id;
 use halley_lang::ast::{Argument, Block, Constructor, Expression, Program, Statement, Type};
-use crate::name_resolution::{NameResolutionError, NameResolver};
+use crate::name_resolution::{Definition, NameResolutionError, NameResolver};
 use crate::name_resolution::scope::Scope;
 
-pub fn resolve_names(program: &Program) -> Result<NameResolver, NameResolutionError> {
+pub fn resolve_names(program: &'_ Program) -> Result<NameResolver<'_>, NameResolutionError> {
     let mut resolver: NameResolver = NameResolver::new();
     let mut root_scope: Scope = Scope::new();
     
     // Insert top-level definitions
     for statement in &program.statements {
-        if let Some(id) = get_statement_id(statement) {
+        if let Some((id, definition)) = get_definition(statement) {
             // TODO maybe collect these errors and display all at once
             root_scope.add_definition(id.name.clone(), id.clone())?;
+            resolver.add_definition(id.clone(), definition);
         }
     }
     
@@ -33,7 +34,7 @@ pub fn resolve_names(program: &Program) -> Result<NameResolver, NameResolutionEr
     Ok(resolver)
 }
 
-fn resolve_statement_names(statement: &Statement, resolver: &mut NameResolver, parent_scope: &mut Scope) -> Result<(), NameResolutionError> {
+fn resolve_statement_names<'a>(statement: &'a Statement, resolver: &mut NameResolver<'a>, parent_scope: &mut Scope) -> Result<(), NameResolutionError> {
     match statement {
         Statement::Function { id, arguments, return_type, body } => {
             for argument in arguments {
@@ -65,7 +66,7 @@ fn resolve_statement_names(statement: &Statement, resolver: &mut NameResolver, p
     Ok(())
 }
 
-fn resolve_constructor_names(constructor: &Constructor, resolver: &mut NameResolver, parent_scope: &mut Scope) -> Result<(), NameResolutionError> {
+fn resolve_constructor_names<'a>(constructor: &'a Constructor, resolver: &mut NameResolver<'a>, parent_scope: &mut Scope) -> Result<(), NameResolutionError> {
     parent_scope.add_definition(constructor.id.name.clone(), constructor.id.clone())?;
     for field in &constructor.fields {
         resolve_argument_names(field, resolver, parent_scope)?;
@@ -77,20 +78,22 @@ fn resolve_constructor_names(constructor: &Constructor, resolver: &mut NameResol
     Ok(())
 }
 
-fn resolve_block_names(block: &Block, resolver: &mut NameResolver, parent_scope: &mut Scope) -> Result<(), NameResolutionError> {
+fn resolve_block_names<'a>(block: &'a Block, resolver: &mut NameResolver<'a>, parent_scope: &mut Scope) -> Result<(), NameResolutionError> {
     let mut scope = parent_scope;
     for (i, statement) in block.statements.iter().enumerate() {
         resolve_statement_names(statement, resolver, scope)?;
         scope = scope.add_child(i.to_string())?;
-        if let Some(id) = get_statement_id(statement) {
+        if let Some((id, definition)) = get_definition(statement) {
             scope.add_definition(id.name.clone(), id.clone())?;
+            resolver.add_definition(id.clone(), definition);
         }
     }
     resolve_expression_names(&block.expression, resolver, scope)?;
     Ok(())
 }
 
-fn resolve_argument_names(argument: &Argument, resolver: &mut NameResolver, parent_scope: &mut Scope) -> Result<(), NameResolutionError> {
+fn resolve_argument_names<'a>(argument: &'a Argument, resolver: &mut NameResolver<'a>, parent_scope: &mut Scope) -> Result<(), NameResolutionError> {
+    resolver.add_definition(argument.id.clone(), Definition::Argument(argument));
     resolve_type_names(&argument.ty, resolver, parent_scope)
 }
 
@@ -141,11 +144,11 @@ fn resolve_type_names(ty: &Type, resolver: &mut NameResolver, parent_scope: &mut
     Ok(())
 }
 
-fn get_statement_id(statement: &Statement) -> Option<&Id> {
+fn get_definition(statement: &Statement) -> Option<(&Id, Definition)> {
     match statement {
-        Statement::Function { id, .. } => Some(id),
-        Statement::Data { id, .. } => Some(id),
-        Statement::Let { id, .. } => Some(id),
+        Statement::Function { id, .. } => Some((id, Definition::Function(&statement))),
+        Statement::Data { id, .. } => Some((id, Definition::Data(&statement))),
+        Statement::Let { id, .. } => Some((id, Definition::Let(&statement))),
         
         Statement::Assign { .. } => None,
     }

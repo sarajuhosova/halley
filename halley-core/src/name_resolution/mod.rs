@@ -4,28 +4,47 @@ mod scope;
 use std::collections::HashMap;
 use std::fmt::{Display, Formatter};
 use halley_lang::ast::id::Id;
+use halley_lang::ast::{Argument, Constructor, Statement};
 
-pub struct NameResolver {
+pub struct NameResolver<'a> {
     mapping: HashMap<Id, Id>,
+    definitions: HashMap<Id, Definition<'a>>,
 }
 
-impl NameResolver {
+impl<'a> NameResolver<'a> {
     
-    pub fn new() -> NameResolver {
-        NameResolver { mapping: HashMap::new() }
+    pub fn new() -> NameResolver<'a> {
+        NameResolver { mapping: HashMap::new(), definitions: HashMap::new() }
+    }
+
+    pub fn add_definition(&mut self, id: Id, definition: Definition<'a>) {
+        self.definitions.insert(id, definition);
     }
     
     pub fn add_mapping(&mut self, id: Id, definition: Id) {
         self.mapping.insert(id, definition);
     }
 
-    pub fn resolve(&self, id: Id) -> Option<&Id> {
-        self.mapping.get(&id)
+    pub fn get_definition(&self, id: &Id) -> Option<&Definition<'a>> {
+        self.definitions.get(id)
+    }
+
+    pub fn resolve(&self, id: &Id) -> Option<&Id> {
+        self.mapping.get(id)
     }
     
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
+pub enum Definition<'a> {
+    Function(&'a Statement),
+    Data(&'a Statement),
+    Constructor(&'a Constructor),
+    Argument(&'a Argument),
+    Let(&'a Statement),
+}
+
+#[derive(Debug, Clone)]
 pub enum NameResolutionError {
     DuplicateDefinition { name: String },
     UnboundIdentifier { id: Id },
