@@ -54,7 +54,7 @@ pub struct NamedParameter {
     pub value: Expression,
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub enum Type {
     Bool, Int,
     Pointer { ty: Box<Type> },

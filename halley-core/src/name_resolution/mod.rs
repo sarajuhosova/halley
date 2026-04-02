@@ -24,6 +24,10 @@ impl<'a> NameResolver<'a> {
     pub fn add_mapping(&mut self, id: Id, definition: Id) {
         self.mapping.insert(id, definition);
     }
+    
+    pub fn all_definitions(&self) -> Vec<&Definition<'a>> {
+        self.definitions.iter().map(|(_, d)| d).collect()
+    }
 
     pub fn get_definition(&self, id: &Id) -> Option<&Definition<'a>> {
         self.definitions.get(id)

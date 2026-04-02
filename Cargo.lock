@@ -256,6 +256,10 @@ dependencies = [
 [[package]]
 name = "halley-pbt-generator"
 version = "0.1.0"
+dependencies = [
+ "halley-core",
+ "halley-lang",
+]
 
 [[package]]
 name = "hashbrown"
