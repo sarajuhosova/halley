@@ -196,8 +196,14 @@ pub fn parse_integer(tokens: &mut VecDeque<Token>) -> Result<u64> {
 
 pub fn parse_boolean(tokens: &mut VecDeque<Token>) -> Result<bool> {
     match peek_single_token(tokens) {
-        Some(TokenType::True) => Ok(true),
-        Some(TokenType::False) => Ok(false),
+        Some(TokenType::True) => {
+            parse_single_token(tokens, TokenType::True)?;
+            Ok(true)
+        },
+        Some(TokenType::False) => {
+            parse_single_token(tokens, TokenType::False)?;
+            Ok(false)
+        },
         t => bail!("Invalid boolean: {:?}", t),
     }
 }

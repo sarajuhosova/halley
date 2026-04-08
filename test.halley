@@ -1,12 +1,18 @@
-data Tree {
-    Node { left: &Tree, right: &Tree },
-    Leaf {},
-}
-
 data Nat {
     Zero { },
+    Succ { previous: Nat },
 }
 
-fn f(x: Int, y: Bool) -> Bool {
-    Nat::Zero {  }
+data Option {
+    None {},
+    Some { value: Int },
+}
+
+data List {
+    Nil {},
+    Cons { head: Int, tail: List },
+}
+
+fn f(a: Nat, b: Option, c: List) -> Bool {
+    true
 }
