@@ -40,7 +40,13 @@ fn count(ty: &Type, size: usize, resolver: &NameResolver) -> usize {
                 _ => panic!("Invalid variable in type: {} -> {:?}", id.name, definition)
             }
         },
-        Type::Pointer { .. } => todo!(),
+        Type::Pointer { ty } => {
+            if size == 0 {
+                return 0;
+            }
+            count(&*ty, size - 1, resolver) /* generate new */ +
+                if size == 1 { 1 } else { 0 } /* re-use */
+        },
     }
 }
 
@@ -111,7 +117,17 @@ fn generate_sized(ty: &Type, size: usize, index: usize, resolver: &NameResolver)
                 _ => panic!("Invalid variable in type: {} -> {:?}", id.name, definition)
             }
         },
-        Type::Pointer { .. } => todo!(),
+        Type::Pointer { ty } => {
+            if size == 0 {
+                return None;
+            }
+            if size == 1 && index == 0 {
+                return Some(Expression::UnOp { operator: UnaryOperator::Reference, operand: Box::new(Expression::Variable { id: Id::new(String::from("x")) }) })
+            }
+            let index = if size == 1 { index - 1 } else { index };
+            let value = generate_sized(&*ty, size - 1, index, resolver)?;
+            Some(Expression::UnOp { operator: UnaryOperator::Reference, operand: Box::new(value) })
+        },
     }
 }
 
@@ -154,7 +170,7 @@ fn main() {
             println!("fn {}", id.name);
             for argument in arguments {
                 println!(" - {argument}");
-                for i in 0..5 {
+                for i in 0..10 {
                     let expr = generate(&argument.ty, i, &resolver);
                     println!("   * {expr}");
                 }

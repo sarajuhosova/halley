@@ -10,9 +10,14 @@ data Option {
 
 data List {
     Nil {},
-    Cons { head: Int, tail: List },
+    Cons { head: Bool, tail: List },
 }
 
-fn f(a: Nat, b: Option, c: List) -> Bool {
+data Tree {
+    Leaf {},
+    Node { left: &Tree, right: &Tree }
+}
+
+fn f(a: Nat, b: Option, c: List, d: Tree) -> Bool {
     true
 }
